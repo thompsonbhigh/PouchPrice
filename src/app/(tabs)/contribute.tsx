@@ -1,10 +1,10 @@
-import { Text, View, ScrollView, Pressable, TextInput } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { Bell, MapPin } from "lucide-react-native";
+import { useState } from "react";
+import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import Dropdown from 'react-native-input-select';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles, theme } from '../../styles/global';
-import { Bell, MapPin } from "lucide-react-native";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import Dropdown from 'react-native-input-select';
-import { useState } from "react";
 
 export default function Contribute() {
     const [brand, setBrand] = useState('');
@@ -83,9 +83,34 @@ export default function Contribute() {
                         ]}
                         selectedValue={brand}
                         selectedItemStyle={styles.input}
-                        onValueChange={(value) => setBrand(value)}
+                        onValueChange={(value: any) => setBrand(value)}
                         primaryColor={theme.colors.primary}
                     />
+                
+                <Text style={styles.linkText}>Flavor</Text>
+                <View style={styles.inputWrapper}>
+                    <Ionicons name="leaf-outline" style={styles.inputIcon} size={24}/>
+                    <TextInput style={styles.input} placeholderTextColor={theme.colors.secondary} placeholder="e.g. Wintergreen" />
+                </View>
+
+                <View style={styles.emptyStateTitle} />
+
+                <Text style={styles.linkText}>Strength</Text>
+                <View style={styles.inputWrapper}>
+                    <Ionicons name="flash-outline" style={styles.inputIcon} size={24}/>
+                    <TextInput style={styles.input} placeholderTextColor={theme.colors.secondary} placeholder="e.g. 6mg" />
+                </View>
+
+                <Pressable style={({ pressed }) => [
+                    styles.button, 
+                    styles.buttonPrimary, 
+                    {marginTop: 20},
+                    pressed && {backgroundColor: theme.colors.inversePrimary}
+                    ]}>
+                    <Text style={styles.headlineMd}>Submit Price Report</Text>
+                    <Ionicons name="send-outline" style={[styles.headlineMd, {marginLeft: 5}]} size={24}/>
+                </Pressable>
+
             </ScrollView>
         </SafeAreaView>
     )

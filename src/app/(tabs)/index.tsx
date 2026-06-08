@@ -1,16 +1,18 @@
-import { Text, View, ScrollView, TextInput } from "react-native";
-import { Sora_400Regular, Sora_700Bold, useFonts } from '@expo-google-fonts/sora';
 import { HankenGrotesk_400Regular } from '@expo-google-fonts/hanken-grotesk';
+import { Sora_400Regular, Sora_700Bold, useFonts } from '@expo-google-fonts/sora';
+import { useRouter } from "expo-router";
 import * as SplashScreen from 'expo-splash-screen';
+import { Bell, LocateFixed, MapPin, Search } from 'lucide-react-native';
 import { useEffect, useState } from "react";
-import { styles, theme } from '../../styles/global';
+import { ScrollView, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { MapPin, Bell, Search, LocateFixed, Car } from 'lucide-react-native';
 import { PriceCard } from "../../components/PriceCard";
+import { styles, theme } from '../../styles/global';
 
 export default function HomeScreen() {
     const [isFocused, setIsFocused] = useState(false);
     const [isPressed, setIsPressed] = useState(false);
+    const router = useRouter();
     
     const [loaded, error] = useFonts({
         Sora_400Regular,
@@ -56,6 +58,7 @@ export default function HomeScreen() {
                 </View>
 
                 <PriceCard
+                    onPress={() => router.push('/storeInfo')}
                     storeName="7-Eleven"
                     price="3.99"
                     bestPrice={true}

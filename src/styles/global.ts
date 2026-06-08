@@ -108,7 +108,7 @@ export const theme = {
     priceDisplay: {
       fontFamily: "Sora-Bold",
       fontSize: 24,
-      lineHeight: 24,
+      lineHeight: 0,
     },
 
     labelCaps: {
@@ -392,8 +392,6 @@ export const styles = StyleSheet.create({
 
   buttonPrimary: {
     backgroundColor: theme.colors.primaryContainer,
-    borderBottomWidth: 2,
-    borderBottomColor: theme.colors.primary,
   },
 
   buttonPrimaryText: {
@@ -406,7 +404,6 @@ export const styles = StyleSheet.create({
     backgroundColor: "transparent",
     borderWidth: 1,
     borderColor: theme.colors.secondary,
-    borderBottomWidth: 2,
   },
 
   buttonSecondaryText: {

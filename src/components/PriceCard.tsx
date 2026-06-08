@@ -1,6 +1,6 @@
-import { Pressable, View, Text, Image } from "react-native";
-import { styles, theme } from '../styles/global';
 import { Car } from "lucide-react-native";
+import { Image, Pressable, Text, View } from "react-native";
+import { styles, theme } from '../styles/global';
 
 type PriceCardProps = {
     storeName: string;
@@ -13,6 +13,7 @@ type PriceCardProps = {
     amount: string;
     accentColor?: string;
     image?: any;
+    onPress?: any;
 }
 
 export function PriceCard({
@@ -23,12 +24,13 @@ export function PriceCard({
     productName,
     strength,
     amount,
+    onPress,
     image = require('../../assets/images/zyn.png'),
     bestPrice = false,
     accentColor = theme.colors.tertiary,
 }: PriceCardProps) {
     return (
-        <Pressable style={({ pressed }) => [
+        <Pressable onPress={onPress} style={({ pressed }) => [
             styles.productCard,
             pressed && styles.cardPressed,
         ]}>
