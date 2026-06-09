@@ -1,7 +1,4 @@
-import { HankenGrotesk_400Regular } from '@expo-google-fonts/hanken-grotesk';
-import { Sora_400Regular, Sora_700Bold, useFonts } from '@expo-google-fonts/sora';
-import { useRouter } from "expo-router";
-import * as SplashScreen from 'expo-splash-screen';
+import * as Location from 'expo-location';
 import { Bell, LocateFixed, MapPin, Search } from 'lucide-react-native';
 import { useEffect, useState } from "react";
 import { ScrollView, Text, TextInput, View } from "react-native";
@@ -12,22 +9,64 @@ import { styles, theme } from '../../styles/global';
 export default function HomeScreen() {
     const [isFocused, setIsFocused] = useState(false);
     const [isPressed, setIsPressed] = useState(false);
-    const router = useRouter();
-    
-    const [loaded, error] = useFonts({
-        Sora_400Regular,
-        Sora_700Bold,
-        HankenGrotesk_400Regular,
-    });
+    const [location, setLocation] = useState<any>();
+    const [latitude, setLatitude] = useState<any>();
+    const [longitude, setLongitude] = useState<any>();
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    const [stores, setStores] = useState<any[]>([]);
+
+    const backend = 'https://pouchpricebackend-production.up.railway.app';
 
     useEffect(() => {
-        if (loaded || error) {
-            SplashScreen.hideAsync();
-        }
-    }, [loaded, error]);
+        async function getCurrentLocation() {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                setErrorMsg('Permission to access location was denied');
+                return;
+            }
 
-    if (!loaded && !error) {
-        return null;
+            let { coords } = await Location.getCurrentPositionAsync({});
+            let { latitude, longitude } = coords;
+            let response = await Location.reverseGeocodeAsync({latitude, longitude});
+            console.log(response);
+            setLocation(response.at(0));
+            setLatitude(latitude);
+            setLongitude(longitude);
+        }
+
+        getCurrentLocation();
+    }, []);
+
+    useEffect(() => {
+        async function getNearbyStores() {
+            const response = await fetch(`${backend}/api/gas-stations?lat=${latitude}&lng=${longitude}`);
+            const stores = await response.json();
+
+            setStores(stores);
+        }
+
+        if (latitude && longitude) {
+            getNearbyStores();
+        }
+    }, [latitude, longitude]);
+
+    let storeElement;
+    if (stores) {
+        storeElement = stores.map(store =>
+            <PriceCard
+                key={store.properties.place_id}
+                storeName={store.properties.name}
+                price="-.--"
+                bestPrice={false}
+                distance={(store.properties.distance / 1609).toPrecision(2)}
+                address={store.properties.housenumber + ' ' + store.properties.street}
+                hours='24/7'
+                productName='ZYN Peppermint'
+                strength='6MG'
+                amount='15 POUCHES'
+                accentColor={theme.colors.tertiaryContainer}
+            />
+        )
     }
 
     return (
@@ -50,38 +89,14 @@ export default function HomeScreen() {
 
                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginBottom: theme.spacing.lg}}>
                     <LocateFixed size={20} style={{color: theme.colors.secondary, marginRight: 5}}/>
-                    <Text style={styles.labelCaps}>CURRENT AREA: SOUTHLAKE (2 MILES)</Text>
+                    <Text style={styles.labelCaps}>CURRENT AREA: {location?.city}</Text>
                 </View>
 
                 <View style={styles.sectionHeader}>
                     <Text style={styles.headlineLg}>Best Value Near You</Text>
                 </View>
 
-                <PriceCard
-                    onPress={() => router.push('/storeInfo')}
-                    storeName="7-Eleven"
-                    price="3.99"
-                    bestPrice={true}
-                    distance="0.5"
-                    hours="24/7"
-                    productName="ZYN Peppermint"
-                    strength="6MG"
-                    amount="15 POUCHES"
-                    accentColor={theme.colors.tertiaryContainer}
-                />
-
-                <PriceCard
-                    storeName="QuikTrip"
-                    price="4.29"
-                    bestPrice={false}
-                    distance="2.3"
-                    hours="10:00PM"
-                    productName="VELO Wintergreen"
-                    strength="9MG"
-                    amount="20 POUCHES"
-                    accentColor={theme.colors.primaryContainer}
-                    image={require('../../../assets/images/velo.webp')}
-                />
+                {storeElement}
 
             </ScrollView>
         </SafeAreaView>

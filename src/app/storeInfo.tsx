@@ -1,5 +1,5 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Bell } from "lucide-react-native";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -7,6 +7,7 @@ import { styles, theme } from "../styles/global";
 
 export default function storeInfo() {
     const router = useRouter();
+    const { storeName, address } = useLocalSearchParams();
 
     return (
         <SafeAreaProvider>
@@ -24,10 +25,10 @@ export default function storeInfo() {
                                 <Ionicons name="storefront-outline" size={40} color={theme.colors.primary} />
                             </View>
                             <View style={styles.column}>
-                                <Text style={styles.headlineLg}>7-Eleven</Text>
+                                <Text style={styles.headlineLg}>{storeName}</Text>
                                 <View style={styles.rowStart}>
                                     <Ionicons name="location-outline" size={16} />
-                                    <Text style={styles.chipText}> West 7th Street</Text>   
+                                    <Text style={styles.chipText}>{address}</Text>   
                                 </View>
                             </View>
                         </View>
@@ -56,6 +57,13 @@ export default function storeInfo() {
                                 <Text style={styles.buttonSecondaryText}>Share</Text>
                             </Pressable>
                         </View>
+                    </View>
+
+                    <View style={styles.emptyStateTitle} />
+                    <View style={styles.emptyStateTitle} />
+
+                    <View style={styles.section}>
+                        <Text style={styles.headlineLgMobile}>Current Stock</Text>
                     </View>
 
                 </ScrollView>

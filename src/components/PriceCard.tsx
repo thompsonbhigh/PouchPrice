@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { Car } from "lucide-react-native";
 import { Image, Pressable, Text, View } from "react-native";
 import { styles, theme } from '../styles/global';
@@ -13,7 +14,7 @@ type PriceCardProps = {
     amount: string;
     accentColor?: string;
     image?: any;
-    onPress?: any;
+    address: string;
 }
 
 export function PriceCard({
@@ -24,13 +25,16 @@ export function PriceCard({
     productName,
     strength,
     amount,
-    onPress,
+    address,
     image = require('../../assets/images/zyn.png'),
     bestPrice = false,
     accentColor = theme.colors.tertiary,
 }: PriceCardProps) {
     return (
-        <Pressable onPress={onPress} style={({ pressed }) => [
+        <Pressable onPress={() => router.push({
+            pathname: '/storeInfo',
+            params: { storeName: storeName, address: address }
+        })} style={({ pressed }) => [
             styles.productCard,
             pressed && styles.cardPressed,
         ]}>
@@ -40,7 +44,7 @@ export function PriceCard({
                     <Text style={styles.productTitle}>{storeName}</Text>
                     <View style={styles.row}>
                         <Car color={theme.colors.onSurfaceVariant} />
-                        <Text style={styles.productSubtitle}>{distance} mi ⬝ Open {hours != '24/7' ? 'til ' : ''}{hours}</Text>
+                        <Text style={styles.productSubtitle}>{distance.toString()} mi ⬝ Open {hours != '24/7' ? 'til ' : ''}{hours}</Text>
                     </View>
                 </View>
 
