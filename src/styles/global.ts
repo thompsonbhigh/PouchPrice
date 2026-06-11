@@ -54,6 +54,8 @@ export const theme = {
     white: "#ffffff",
     priceAlert: "#f59e0b",
     shadowMint: "rgba(0, 209, 160, 0.1)",
+
+    cardBrandHeaderBg: '#e6faf6',
   },
 
   fonts: {
@@ -207,6 +209,11 @@ export const styles = StyleSheet.create({
     alignItems: 'center'
   },
 
+  columnRight: {
+    flexDirection: 'column',
+    alignItems: 'flex-end'
+  },
+
   displayLg: {
     ...theme.typography.displayLg,
     color: theme.colors.onSurface,
@@ -284,6 +291,58 @@ export const styles = StyleSheet.create({
         elevation: 2,
       },
     }),
+  },
+
+  brandCard: {
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: theme.colors.outlineVariant,
+    borderRadius: theme.radius.default,
+    overflow: 'hidden',
+    marginBottom: 16,
+  },
+
+   brandEmphasisHeader: {
+    backgroundColor: theme.colors.cardBrandHeaderBg,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+
+  brandEmphasisHeaderText: {
+    color: theme.colors.primary,
+    fontWeight: "700",
+    textTransform: "uppercase",
+    fontSize: 24,
+    letterSpacing: 0.05 * 14,
+  },
+
+  brandEmphasisBody: {
+    padding: 16,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  brandEmphasisInfo: {
+    flexDirection: "column",
+  },
+
+  brandEmphasisStore: {
+    fontWeight: "600",
+    color: theme.colors.onSurface,
+    fontSize: 20
+  },
+
+  brandEmphasisDistance: {
+    fontSize: 16,
+    color: theme.colors.onSurfaceVariant,
+    marginTop: 4,
+  },
+
+  brandEmphasisPrice: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: theme.colors.onSurface,
   },
 
   productCard: {

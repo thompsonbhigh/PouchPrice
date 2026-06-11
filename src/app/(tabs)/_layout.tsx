@@ -1,8 +1,37 @@
-import { styles, theme } from "../../styles/global";
-import { Tabs } from "expo-router";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import * as Location from 'expo-location';
+import { Tabs } from "expo-router";
+import { useEffect, useState } from 'react';
+import { theme } from "../../styles/global";
+
+type Coord = {
+    lat: number;
+    lng: number;
+};
 
 export default function TabLayout() {
+    const [errorMsg, setErrorMsg] = useState('');
+    const [location, setLocation] = useState<any>(null);
+    const [coords, setCoords] = useState<Coord | null>(null);
+
+    useEffect(() => {
+        async function getCurrentLocation() {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                setErrorMsg('Permission to access location was denied');
+                return;
+            }
+
+            let { coords } = await Location.getCurrentPositionAsync({});
+            let { latitude, longitude } = coords;
+            let response = await Location.reverseGeocodeAsync({latitude, longitude});
+            setLocation(response.at(0));
+            setCoords({lat: latitude, lng: longitude});
+        }
+
+        getCurrentLocation();
+    }, []);
+
     return (
         <Tabs
         screenOptions={{
@@ -19,6 +48,10 @@ export default function TabLayout() {
                 name="index"
                 options={{
                     title: 'Home',
+                    href: {
+                        pathname: '/(tabs)',
+                        params: { lat: coords?.lat, lng: coords?.lng, city: location?.city },
+                    },
                     tabBarIcon: ({ color, size, focused }) => (
                         <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
                     ),
@@ -28,6 +61,10 @@ export default function TabLayout() {
                 name="contribute"
                 options={{
                     title: 'Contribute',
+                    href: {
+                        pathname: '/(tabs)/contribute',
+                        params: { lat: coords?.lat, lng: coords?.lng },
+                    },
                     tabBarIcon: ({ color, size, focused }) => (
                         <Ionicons name={focused ? 'add-circle' : 'add-circle-outline'} size={size} color={color} />
                     ),

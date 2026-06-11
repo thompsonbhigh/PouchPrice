@@ -1,4 +1,4 @@
-import * as Location from 'expo-location';
+import { useLocalSearchParams } from 'expo-router';
 import { Bell, LocateFixed, MapPin, Search } from 'lucide-react-native';
 import { useEffect, useState } from "react";
 import { ScrollView, Text, TextInput, View } from "react-native";
@@ -8,63 +8,37 @@ import { styles, theme } from '../../styles/global';
 
 export default function HomeScreen() {
     const [isFocused, setIsFocused] = useState(false);
-    const [isPressed, setIsPressed] = useState(false);
-    const [location, setLocation] = useState<any>();
-    const [latitude, setLatitude] = useState<any>();
-    const [longitude, setLongitude] = useState<any>();
-    const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [stores, setStores] = useState<any[]>([]);
+    const { lat, lng, city } = useLocalSearchParams();
 
-    const backend = 'https://pouchpricebackend-production.up.railway.app';
-
-    useEffect(() => {
-        async function getCurrentLocation() {
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                setErrorMsg('Permission to access location was denied');
-                return;
-            }
-
-            let { coords } = await Location.getCurrentPositionAsync({});
-            let { latitude, longitude } = coords;
-            let response = await Location.reverseGeocodeAsync({latitude, longitude});
-            console.log(response);
-            setLocation(response.at(0));
-            setLatitude(latitude);
-            setLongitude(longitude);
-        }
-
-        getCurrentLocation();
-    }, []);
+    const backend = 'http://localhost:3000';
+    // const backend = 'https://pouchpricebackend-production.up.railway.app';
 
     useEffect(() => {
         async function getNearbyStores() {
-            const response = await fetch(`${backend}/api/gas-stations?lat=${latitude}&lng=${longitude}`);
-            const stores = await response.json();
+            const response = await fetch(`${backend}/api/gas-stations?lat=${lat}&lng=${lng}`);
+            const storeInfo = await response.json();
 
-            setStores(stores);
+            console.log(storeInfo.stores);
+            setStores(storeInfo.stores);
         }
 
-        if (latitude && longitude) {
+        if (lat && lng) {
             getNearbyStores();
         }
-    }, [latitude, longitude]);
+    }, [lat, lng]);
 
     let storeElement;
     if (stores) {
         storeElement = stores.map(store =>
             <PriceCard
-                key={store.properties.place_id}
-                storeName={store.properties.name}
-                price="-.--"
-                bestPrice={false}
-                distance={(store.properties.distance / 1609).toPrecision(2)}
-                address={store.properties.housenumber + ' ' + store.properties.street}
-                hours='24/7'
-                productName='ZYN Peppermint'
-                strength='6MG'
-                amount='15 POUCHES'
-                accentColor={theme.colors.tertiaryContainer}
+                key={store.place_id}
+                storeName={store?.name || 'Unknown Store'}
+                price={store.prices[0]?.price || '-.--'}
+                distance={store.distance_miles}
+                address={store.address}
+                productName={store.prices[0]?.brand}
+                reportedAt={store.last_reported_text}
             />
         )
     }
@@ -89,7 +63,7 @@ export default function HomeScreen() {
 
                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginBottom: theme.spacing.lg}}>
                     <LocateFixed size={20} style={{color: theme.colors.secondary, marginRight: 5}}/>
-                    <Text style={styles.labelCaps}>CURRENT AREA: {location?.city}</Text>
+                    <Text style={styles.labelCaps}>CURRENT AREA: {city}</Text>
                 </View>
 
                 <View style={styles.sectionHeader}>
