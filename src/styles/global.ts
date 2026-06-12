@@ -497,6 +497,30 @@ export const styles = StyleSheet.create({
     minHeight: 56,
   },
 
+  autocompleteWrapper: {
+    backgroundColor: theme.colors.surfaceContainerLowest,
+    borderWidth: 1,
+    borderColor: theme.colors.outlineVariant,
+    borderRadius: theme.radius.lg,
+    paddingHorizontal: theme.spacing.md,
+    minHeight: 56,
+  },
+
+  autocompleteResWrapper: {
+    flexDirection: 'column',
+    backgroundColor: theme.colors.surfaceContainerLowest,
+    borderTopWidth: 1,
+    borderColor: theme.colors.outlineVariant,
+    padding: theme.spacing.md,
+    marginLeft: 24
+  },
+
+  autocompleteText: {
+    ...theme.typography.bodyMd,
+    color: theme.colors.secondary,
+    fontFamily: theme.fonts.bodyRegular
+  },
+
   inputWrapperFocused: {
     flexDirection: "row",
     alignItems: "center",

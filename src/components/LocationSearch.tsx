@@ -53,24 +53,30 @@ export default function LocationSearch({ userLat, userLng, backend, setLocation 
 
     return (
         <View>
-            <View style={styles.inputWrapper}>
-                <Ionicons name='storefront-outline' style={styles.inputIcon} size={24} />
-                <TextInput
-                    style={styles.input}
-                    value={inputText}
-                    onChangeText={(e) => {setQuery(e); setInputText(e)}}
-                    placeholder="e.g. 7-Eleven, Main St"
-                    placeholderTextColor={theme.colors.secondary}
-                    autoCorrect={false}
-                    enterKeyHint='search'
-                />
-            </View>
+            <View style={styles.autocompleteWrapper}>
+                <View style={[styles.row, {paddingTop: 12}]}>
+                    <Ionicons name='storefront-outline' style={styles.inputIcon} size={24} />
+                    <TextInput
+                        style={styles.input}
+                        value={inputText}
+                        onChangeText={(e) => {setQuery(e); setInputText(e)}}
+                        placeholder="e.g. 7-Eleven, Main St"
+                        placeholderTextColor={theme.colors.secondary}
+                        autoCorrect={false}
+                        enterKeyHint='search'
+                    />
+                </View>
 
-            {suggestions.map((item) => (
-                <Pressable key={item.id} onPress={() => {setSelectedLocation(item), setLocation(item), setQuery(''), setInputText(item.label.split(',')[0])}}>
-                    <Text>{item.label}</Text>
-                </Pressable>
-            ))}
+                    {suggestions.map((item) => (
+                        <Pressable style={({ pressed }) => [
+                            styles.autocompleteResWrapper,
+                            pressed && {backgroundColor: theme.colors.outline}
+                        ]}
+                            key={item.id} onPress={() => {setSelectedLocation(item), setLocation(item), setQuery(''), setInputText(item.label.split(',')[0])}}>
+                            <Text style={styles.autocompleteText}>{item.label}</Text>
+                        </Pressable>
+                    ))}
+            </View>
         </View>
     );
 }

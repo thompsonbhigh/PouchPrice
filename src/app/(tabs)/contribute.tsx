@@ -24,7 +24,15 @@ export default function Contribute() {
         try {
             const address = (location?.housenumber ? location.housenumber : '') + ' ' + location.street;
             const response = await fetch(
-                `${backend}/api/report-price?address=${address}&name=${location?.name}&brand=${brand}&price=${price}`
+                `${backend}/api/report-price?
+                &address=${address}
+                &name=${location?.name}
+                &lat=${location.lat}
+                &lng=${location.lon}
+                &city=${location.city}
+                &state=${location.state}
+                &brand=${brand}
+                &price=${price}`
             );
             const data = await response.json();
         } catch (err) {
