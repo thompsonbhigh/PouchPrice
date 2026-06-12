@@ -14,8 +14,8 @@ export default function Contribute() {
     const { lat, lng, city } = useLocalSearchParams();
     const [location, setLocation] = useState<any | null>(null);
 
-    // const backend = 'https://pouchpricebackend-production.up.railway.app';
-    const backend = 'http://localhost:3000';
+    const backend = 'https://pouchpricebackend-production.up.railway.app';
+    // const backend = 'http://localhost:3000';
 
     async function handleSubmit() {
         if (!brand || !price || !location) {

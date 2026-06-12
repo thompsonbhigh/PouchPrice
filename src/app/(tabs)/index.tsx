@@ -11,8 +11,8 @@ export default function HomeScreen() {
     const [stores, setStores] = useState<any[]>([]);
     const { lat, lng, city } = useLocalSearchParams();
 
-    const backend = 'http://localhost:3000';
-    // const backend = 'https://pouchpricebackend-production.up.railway.app';
+    // const backend = 'http://localhost:3000';
+    const backend = 'https://pouchpricebackend-production.up.railway.app';
 
     useEffect(() => {
         async function getNearbyStores() {
