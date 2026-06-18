@@ -11,8 +11,8 @@ export default function HomeScreen() {
     const [stores, setStores] = useState<any[]>([]);
     const { lat, lng, city } = useLocalSearchParams();
 
-    // const backend = 'http://localhost:3000';
-    const backend = 'https://pouchpricebackend-production.up.railway.app';
+    const backend = 'http://localhost:3000';
+    // const backend = 'https://pouchpricebackend-production.up.railway.app';
 
     useEffect(() => {
         async function getNearbyStores() {
@@ -32,7 +32,9 @@ export default function HomeScreen() {
     if (stores) {
         storeElement = stores.map(store =>
             <PriceCard
-                key={store.place_id}
+                key={store.id}
+                id = {store.id}
+                placeId={store.place_id}
                 storeName={store?.name || 'Unknown Store'}
                 price={store.prices[0]?.price || '-.--'}
                 distance={store.distance_miles}

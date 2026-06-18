@@ -4,10 +4,46 @@ import { Bell } from "lucide-react-native";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { styles, theme } from "../styles/global";
+import { useEffect, useState } from "react";
 
 export default function storeInfo() {
     const router = useRouter();
-    const { storeName, address } = useLocalSearchParams();
+    const { storeName, address, id } = useLocalSearchParams();
+    const [storeInfo, setStoreInfo] = useState([]);
+
+    // const backend = 'https://pouchpricebackend-production.up.railway.app';
+    const backend = 'http://localhost:3000';
+
+    async function getStoreInfo(id: string | string[]) {
+        try {
+            const response = await fetch(`${backend}/api/store-info?id=${id}`);
+            const result = await response.json();
+
+            console.log(result);
+            setStoreInfo(result.storeInfo);
+        } catch (err) {
+            console.error('Unable to get store info', err);
+        }
+    }
+
+    useEffect(() => {
+        getStoreInfo(id);
+    }, []);
+
+    const storeStockList = Array.isArray(storeInfo) ? storeInfo : [];
+    console.log(storeStockList);
+
+    const storeStock = storeStockList.map((card: any) => (
+        <View key={card.id} style={styles.brandCard}>
+            <View style={styles.brandEmphasisBody}>
+                <Text style={styles.brandEmphasisHeaderText}>{card.brand}</Text>
+                <View style={styles.columnRight}>
+                    <Text style={styles.brandEmphasisPrice}>${card.price}</Text>
+                    <Text style={styles.brandEmphasisDistance}>{card.last_reported_text}</Text>
+                </View>
+            </View>
+        </View>
+    ));
 
     return (
         <SafeAreaProvider>
@@ -64,6 +100,10 @@ export default function storeInfo() {
 
                     <View style={styles.section}>
                         <Text style={styles.headlineLgMobile}>Current Stock</Text>
+                    </View>
+
+                    <View style={styles.section}>
+                        {storeStock}
                     </View>
 
                 </ScrollView>

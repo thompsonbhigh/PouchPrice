@@ -4,6 +4,8 @@ import { Pressable, Text, View } from "react-native";
 import { styles } from '../styles/global';
 
 type PriceCardProps = {
+    placeId: string;
+    id: number;
     storeName: string;
     price: string;
     distance: string;
@@ -13,6 +15,7 @@ type PriceCardProps = {
 }
 
 export function PriceCard({
+    id,
     storeName,
     price,
     distance,
@@ -23,7 +26,7 @@ export function PriceCard({
     return (
         <Pressable onPress={() => router.push({
             pathname: '/storeInfo',
-            params: { storeName: storeName, address: address }
+            params: { storeName: storeName, address: address, id: id }
         })} style={({ pressed }) => [
             styles.brandCard,
             pressed && styles.cardPressed,
