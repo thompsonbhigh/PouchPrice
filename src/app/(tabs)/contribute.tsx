@@ -2,20 +2,21 @@ import LocationSearch from "@/src/components/LocationSearch";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams } from "expo-router";
 import { Bell, MapPin } from "lucide-react-native";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import Dropdown from 'react-native-input-select';
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { styles, theme } from '../../styles/global';
+import { CoordsContext } from "./_layout";
 
 export default function Contribute() {
     const [brand, setBrand] = useState<any | null>(null);
     const [price, setPrice] = useState<any | null>(null);
-    const { lat, lng, city } = useLocalSearchParams();
     const [location, setLocation] = useState<any | null>(null);
+    const coords = useContext(CoordsContext);
 
-    // const backend = 'https://pouchpricebackend-production.up.railway.app';
-    const backend = 'http://localhost:3000';
+    const backend = 'https://pouchpricebackend-production.up.railway.app';
+    // const backend = 'http://localhost:3000';
 
     async function handleSubmit() {
         if (!brand || !price || !location) {
@@ -90,7 +91,7 @@ export default function Contribute() {
                         <Ionicons name="storefront-outline" style={styles.inputIcon} size={24}/>
                         <TextInput style={styles.input} placeholderTextColor={theme.colors.secondary} placeholder="e.g. 7-Eleven, Main St" />
                     </View> */}
-                    <LocationSearch userLat={lat} userLng={lng} backend={backend} setLocation={setLocation} />
+                    <LocationSearch userLat={coords?.lat} userLng={coords?.lng} backend={backend} setLocation={setLocation} />
 
                     <View style={styles.emptyStateTitle} />
             
@@ -127,30 +128,6 @@ export default function Contribute() {
                             primaryColor={theme.colors.primary}
                         />
                     
-                    <Text style={styles.linkText}>Flavor</Text>
-                    <View style={styles.inputWrapper}>
-                        <Ionicons name="leaf-outline" style={styles.inputIcon} size={24}/>
-                        <TextInput 
-                            style={styles.input} 
-                            placeholderTextColor={theme.colors.secondary} 
-                            placeholder="e.g. Wintergreen" 
-                            enterKeyHint="done"
-                        />
-                    </View>
-
-                    <View style={styles.emptyStateTitle} />
-
-                    <Text style={styles.linkText}>Strength</Text>
-                    <View style={styles.inputWrapper}>
-                        <Ionicons name="flash-outline" style={styles.inputIcon} size={24}/>
-                        <TextInput 
-                            style={styles.input} 
-                            placeholderTextColor={theme.colors.secondary} 
-                            placeholder="e.g. 6mg" 
-                            enterKeyHint="done"
-                        />
-                    </View>
-
                     <Pressable onPress={handleSubmit} style={({ pressed }) => [
                         styles.button, 
                         styles.buttonPrimary, 

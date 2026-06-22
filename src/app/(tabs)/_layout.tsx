@@ -1,13 +1,16 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as Location from 'expo-location';
 import { Tabs } from "expo-router";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, createContext } from 'react';
 import { theme } from "../../styles/global";
 
 type Coord = {
     lat: number;
     lng: number;
 };
+
+export const LocationContext = createContext<any>(null);
+export const CoordsContext = createContext<Coord | null>(null);
 
 export default function TabLayout() {
     const [errorMsg, setErrorMsg] = useState('');
@@ -33,43 +36,39 @@ export default function TabLayout() {
     }, []);
 
     return (
-        <Tabs
-        screenOptions={{
-            headerShown: false,
-            tabBarStyle: {
-                backgroundColor: theme.colors.background,
-                borderTopColor: theme.colors.outline,
-            },
-            tabBarActiveTintColor: theme.colors.inversePrimary,
-            tabBarInactiveTintColor: theme.colors.secondary,
-        }}
-        >
-            <Tabs.Screen
-                name="index"
-                options={{
-                    title: 'Home',
-                    href: {
-                        pathname: '/(tabs)',
-                        params: { lat: coords?.lat, lng: coords?.lng, city: location?.city },
+        <LocationContext value={location}>
+            <CoordsContext value={coords}>
+                <Tabs
+                screenOptions={{
+                    headerShown: false,
+                    tabBarStyle: {
+                        backgroundColor: theme.colors.background,
+                        borderTopColor: theme.colors.outline,
                     },
-                    tabBarIcon: ({ color, size, focused }) => (
-                        <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
-                    ),
+                    tabBarActiveTintColor: theme.colors.inversePrimary,
+                    tabBarInactiveTintColor: theme.colors.secondary,
                 }}
-            />
-            <Tabs.Screen
-                name="contribute"
-                options={{
-                    title: 'Contribute',
-                    href: {
-                        pathname: '/(tabs)/contribute',
-                        params: { lat: coords?.lat, lng: coords?.lng },
-                    },
-                    tabBarIcon: ({ color, size, focused }) => (
-                        <Ionicons name={focused ? 'add-circle' : 'add-circle-outline'} size={size} color={color} />
-                    ),
-                }}
-            />
-        </Tabs>
+                >
+                    <Tabs.Screen
+                        name="index"
+                        options={{
+                            title: 'Home',
+                            tabBarIcon: ({ color, size, focused }) => (
+                                <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
+                            ),
+                        }}
+                    />
+                    <Tabs.Screen
+                        name="contribute"
+                        options={{
+                            title: 'Contribute',
+                            tabBarIcon: ({ color, size, focused }) => (
+                                <Ionicons name={focused ? 'add-circle' : 'add-circle-outline'} size={size} color={color} />
+                            ),
+                        }}
+                    />
+                </Tabs>
+            </CoordsContext>
+        </LocationContext>
     )
 }

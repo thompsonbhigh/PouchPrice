@@ -1,32 +1,42 @@
 import { useLocalSearchParams } from 'expo-router';
 import { Bell, LocateFixed, MapPin, Search } from 'lucide-react-native';
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ScrollView, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { PriceCard } from "../../components/PriceCard";
 import { styles, theme } from '../../styles/global';
+import { CoordsContext, LocationContext } from './_layout';
+import Loader from '@/src/components/Loader';
 
 export default function HomeScreen() {
     const [isFocused, setIsFocused] = useState(false);
     const [stores, setStores] = useState<any[]>([]);
-    const { lat, lng, city } = useLocalSearchParams();
+    const coords = useContext(CoordsContext);
+    const location = useContext(LocationContext);
+    const [loading, setLoading] = useState<boolean>(false);
 
-    const backend = 'http://localhost:3000';
-    // const backend = 'https://pouchpricebackend-production.up.railway.app';
+    // const backend = 'http://localhost:3000';
+    const backend = 'https://pouchpricebackend-production.up.railway.app';
 
     useEffect(() => {
         async function getNearbyStores() {
-            const response = await fetch(`${backend}/api/gas-stations?lat=${lat}&lng=${lng}`);
-            const storeInfo = await response.json();
+            setLoading(true);
+            try {
+                const response = await fetch(`${backend}/api/gas-stations?lat=${coords?.lat}&lng=${coords?.lng}`);
+                const storeInfo = await response.json();
 
-            console.log(storeInfo.stores);
-            setStores(storeInfo.stores);
+                setStores(storeInfo.stores);
+            } catch (err) {
+                console.error('Failed to get nearby stores: ', err);
+            } finally {
+                setLoading(false);
+            }
         }
 
-        if (lat && lng) {
+        if (coords?.lat && coords?.lng) {
             getNearbyStores();
         }
-    }, [lat, lng]);
+    }, [coords?.lat, coords?.lng]);
 
     let storeElement;
     if (stores) {
@@ -43,6 +53,13 @@ export default function HomeScreen() {
                 reportedAt={store.last_reported_text}
             />
         )
+    }
+
+    let loader;
+    if (loading) {
+        loader = <Loader />
+    } else {
+        loader = null
     }
 
     return (
@@ -65,13 +82,14 @@ export default function HomeScreen() {
 
                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginBottom: theme.spacing.lg}}>
                     <LocateFixed size={20} style={{color: theme.colors.secondary, marginRight: 5}}/>
-                    <Text style={styles.labelCaps}>CURRENT AREA: {city}</Text>
+                    <Text style={styles.labelCaps}>CURRENT AREA: {location?.city}</Text>
                 </View>
 
                 <View style={styles.sectionHeader}>
                     <Text style={styles.headlineLg}>Best Value Near You</Text>
                 </View>
 
+                {loader}
                 {storeElement}
 
             </ScrollView>

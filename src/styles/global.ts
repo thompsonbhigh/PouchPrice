@@ -167,6 +167,15 @@ export const styles = StyleSheet.create({
     marginBottom: theme.spacing.lg,
   },
 
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    position: 'absolute',
+    top: '175%',
+  },
+
   headerSection: {
     marginBottom: theme.spacing.lg,
     flex: 1,

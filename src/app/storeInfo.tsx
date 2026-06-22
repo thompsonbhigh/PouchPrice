@@ -11,15 +11,14 @@ export default function storeInfo() {
     const { storeName, address, id } = useLocalSearchParams();
     const [storeInfo, setStoreInfo] = useState([]);
 
-    // const backend = 'https://pouchpricebackend-production.up.railway.app';
-    const backend = 'http://localhost:3000';
+    const backend = 'https://pouchpricebackend-production.up.railway.app';
+    // const backend = 'http://localhost:3000';
 
     async function getStoreInfo(id: string | string[]) {
         try {
             const response = await fetch(`${backend}/api/store-info?id=${id}`);
             const result = await response.json();
 
-            console.log(result);
             setStoreInfo(result.storeInfo);
         } catch (err) {
             console.error('Unable to get store info', err);
@@ -31,7 +30,6 @@ export default function storeInfo() {
     }, []);
 
     const storeStockList = Array.isArray(storeInfo) ? storeInfo : [];
-    console.log(storeStockList);
 
     const storeStock = storeStockList.map((card: any) => (
         <View key={card.id} style={styles.brandCard}>
